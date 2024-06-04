@@ -1,44 +1,34 @@
 package com.poscodx.guestbook.repository;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.poscodx.guestbook.vo.GuestbookVo;
 
 @Repository
-public class GuestbookRepository {
+public class GuestbookRepositoryWithRawJdbc {
 	
-	private Connection getConnection() throws SQLException {
-
-	    Connection conn = null;
-
-        try {
-    	    //1. JDBC Driver 로딩 
-			Class.forName("org.mariadb.jdbc.Driver");
-
-	        //2. 연결하기 
-			String url = "jdbc:mariadb://192.168.64.7:3306/webdb?charset=utf8";
-			conn = DriverManager.getConnection(url, "webdb", "webdb");
-			
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩 실패: " + e);
-		} 
-        
-	    return conn;
+	@Autowired
+	private DataSource dataSource;
+	
+	public GuestbookRepositoryWithRawJdbc(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 	
 	public int deleteByNoAndPassword(Long no, String password) {
 		int result = 0;
 		
 		try (
-			Connection conn = getConnection();	
+			Connection conn = dataSource.getConnection();	
 			PreparedStatement pstmt = conn.prepareStatement("delete from guestbook where no = ? and password = ?");
 		){
 			pstmt.setLong(1, no);
@@ -56,7 +46,7 @@ public class GuestbookRepository {
 		
 		
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt1 = conn.prepareStatement("insert into guestbook values(null, ?, ?, ?, now())");
 			PreparedStatement pstmt2 = conn.prepareStatement("select last_insert_id() from dual");
 			) {
@@ -80,7 +70,7 @@ public class GuestbookRepository {
 		List<GuestbookVo> result = new ArrayList<>();
 		
 		try (
-			Connection conn = getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(
 				"select no, name, contents, date_format(reg_date, '%Y/%m/%d %H:%i:%s')" + 
 				"      from guestbook" + 
