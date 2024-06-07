@@ -4,23 +4,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import com.poscodx.guestbook.repository.template.JdbcContext;
 import com.poscodx.guestbook.vo.GuestbookVo;
 
 @Repository
-public class GuestbookRepositoryWithJdbcTemplate {
+public class GuestbookRepository {
+
+	private JdbcContext jdbcContext;
 	
-	private JdbcTemplate jdbcTemplate;
-	
-	public GuestbookRepositoryWithJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
+	public GuestbookRepository(JdbcContext jdbcContext) {
+		this.jdbcContext = jdbcContext;
 	}
 
 	public List<GuestbookVo> findAll() {
-		return jdbcTemplate.query(
+		return jdbcContext.query(
 				"select no, name, contents, date_format(reg_date, '%Y/%m/%d %H:%i:%s') from guestbook order by reg_date desc", 
 				new RowMapper<GuestbookVo>() {
 
@@ -37,24 +37,17 @@ public class GuestbookRepositoryWithJdbcTemplate {
 					
 				});
 	}
-
-	public int insert(GuestbookVo vo) {
-		return jdbcTemplate.update(
-				"insert into guestbook values(null, ?, ?, ?, now())",
-				new Object[] {vo.getName(), vo.getPassword(), vo.getContents()});
-
-		// 가변 파라미터도 지원해줘서 아래와 같이도 가능함
-//		return jdbcTemplate.update(
-//				"insert into guestbook values(null, ?, ?, ?, now())",
-//				vo.getName(), vo.getPassword(), vo.getContents());
-		
-	}
 	
 	public int deleteByNoAndPassword(Long no, String password) {
-		return jdbcTemplate.update(
+		return jdbcContext.update(
+//				"delete from guestbook where no = " + no + " and password = " + password );
 				"delete from guestbook where no = ? and password = ?", 
 				new Object[] {no, password} );
 	}
 	
-	
+	public int insert(GuestbookVo vo) {
+		return jdbcContext.update(
+				"insert into guestbook values(null, ?, ?, ?, now())",
+				new Object[] {vo.getName(), vo.getPassword(), vo.getContents()});
+	}
 }
