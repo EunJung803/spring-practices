@@ -8,6 +8,7 @@ import com.poscodx.aoptest.vo.ProductVo;
 public class ProductService {
 	
 	public ProductVo find(String name) {
+		System.out.println("[ProductService] finding...");
 		return new ProductVo(name);
 	}
 	
