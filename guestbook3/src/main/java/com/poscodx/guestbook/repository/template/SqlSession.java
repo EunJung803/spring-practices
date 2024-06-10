@@ -12,10 +12,10 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
-public class JdbcContext {
+public class SqlSession {
 	private DataSource dataSource;
 	
-	public JdbcContext(DataSource dataSource) {
+	public SqlSession(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 

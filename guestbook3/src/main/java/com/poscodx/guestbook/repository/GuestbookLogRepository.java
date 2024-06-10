@@ -2,14 +2,14 @@ package com.poscodx.guestbook.repository;
 
 import org.springframework.stereotype.Repository;
 
-import com.poscodx.guestbook.repository.template.JdbcContext;
+import com.poscodx.guestbook.repository.template.SqlSession;
 
 @Repository
 public class GuestbookLogRepository {
 
-	private JdbcContext jdbcContext;
+	private SqlSession jdbcContext;
 	
-	public GuestbookLogRepository(JdbcContext jdbcContext) {
+	public GuestbookLogRepository(SqlSession jdbcContext) {
 		this.jdbcContext = jdbcContext;
 	}
 	

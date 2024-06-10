@@ -7,15 +7,15 @@ import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.poscodx.guestbook.repository.template.JdbcContext;
+import com.poscodx.guestbook.repository.template.SqlSession;
 import com.poscodx.guestbook.vo.GuestbookVo;
 
 @Repository
 public class GuestbookRepository {
 
-	private JdbcContext jdbcContext;
+	private SqlSession jdbcContext;
 	
-	public GuestbookRepository(JdbcContext jdbcContext) {
+	public GuestbookRepository(SqlSession jdbcContext) {
 		this.jdbcContext = jdbcContext;
 	}
 
